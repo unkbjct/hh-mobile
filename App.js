@@ -1,12 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import MainNavigation from './navigation/MainNavigation';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <StatusBar
+        backgroundColor="white"
+        barStyle="dark-content"
+        theme="auto"
+      // hidden={true}
+      // animated="slide"
+      // showHideTransition="fade"
+      />
+      <MainNavigation />
+    </SafeAreaView>
   );
 }
 
