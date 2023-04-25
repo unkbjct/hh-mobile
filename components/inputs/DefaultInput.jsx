@@ -12,7 +12,6 @@ import { defStyles } from '../styles';
 export default class DefaultInput extends React.Component {
     constructor(props) {
         super(props)
-        this.animation = React.createRef(new Animated.Value(0))
     }
 
 

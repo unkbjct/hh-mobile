@@ -11,6 +11,7 @@ import SearchNavigation from './SearchNavigation';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ProfileNavigation from './ProfileNavigation';
+import ResumesNavigation from './ResumesNavigation';
 
 
 const ScreenNames = {
@@ -97,7 +98,7 @@ function Main() {
         >
 
             <Tab.Screen name={ScreenNames.Search} component={SearchNavigation} options={{ title: 'Каталог', headerShown: false, }} />
-            <Tab.Screen name={ScreenNames.Resumes} component={SearchNavigation} options={{ headerShown: false, unmountOnBlur: true }} />
+            <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: true }} />
             <Tab.Screen name={ScreenNames.Vacancies} component={SearchNavigation} options={{ headerShown: false }} />
             <Tab.Screen name={ScreenNames.Profile} component={ProfileNavigation} options={{ headerShown: false }} />
 
