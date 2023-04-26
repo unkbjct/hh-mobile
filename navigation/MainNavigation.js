@@ -12,6 +12,7 @@ import SearchNavigation from './SearchNavigation';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ProfileNavigation from './ProfileNavigation';
 import ResumesNavigation from './ResumesNavigation';
+import VacanciesNavigation from './VacanciesNavigation';
 
 
 const ScreenNames = {
@@ -55,53 +56,56 @@ export default function MainNavigation() {
             </Tab.Navigator>
         </NavigationContainer>
     )
-}
+    function Auth() {
+        return (
+            <Stack.Navigator>
+                <Stack.Screen name='login' component={LoginScreen} options={{ title: 'Авторизация', headerShown: false, unmountOnBlur: true }} />
+                <Stack.Screen name='registration' component={RegistrationScreen} options={{ title: 'Регистрация', headerShown: false }} />
+            </Stack.Navigator>
+        )
+    }
+    function Main() {
+        return (
+            <Tab.Navigator
+                // header={'asd'}
+                screenOptions={({ route }) => ({
+                    headerShown: false,
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
 
-
-function Auth() {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen name='login' component={LoginScreen} options={{ title: 'Авторизация', headerShown: false, unmountOnBlur: true }} />
-            <Stack.Screen name='registration' component={RegistrationScreen} options={{ title: 'Регистрация', headerShown: false }} />
-        </Stack.Navigator>
-    )
-}
-
-function Main() {
-    return (
-        <Tab.Navigator
-            // header={'asd'}
-            screenOptions={({ route }) => ({
-                headerShown: true,
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-
-                    let rn = route.name;
-                    // console.debug();
-                    if (rn === ScreenNames.Search) {
-                        iconName = focused ? 'search' : 'search-outline';
-                    } else if (rn === ScreenNames.Resumes) {
-                        iconName = focused ? 'reader' : 'reader-outline';
-                    } else if (rn === ScreenNames.Vacancies) {
-                        iconName = focused ? 'business' : 'business-outline';
-                    } else if (rn === ScreenNames.Profile) {
-                        iconName = focused ? 'person' : 'person-outline';
+                        let rn = route.name;
+                        // console.debug();
+                        if (rn === ScreenNames.Search) {
+                            iconName = focused ? 'search' : 'search-outline';
+                        } else if (rn === ScreenNames.Resumes) {
+                            iconName = focused ? 'reader' : 'reader-outline';
+                        } else if (rn === ScreenNames.Vacancies) {
+                            iconName = focused ? 'business' : 'business-outline';
+                        } else if (rn === ScreenNames.Profile) {
+                            iconName = focused ? 'person' : 'person-outline';
+                        }
+                        color = focused ? '#dc3545' : null;
+                        // size = 20;
+                        return <Ionicons name={iconName} size={25} color={color} />
+                    },
+                    tabBarLabelStyle: {
+                        color: null
                     }
-                    color = focused ? '#dc3545' : null;
-                    // size = 20;
-                    return <Ionicons name={iconName} size={25} color={color} />
-                },
-                tabBarLabelStyle: {
-                    color: null
+                })}
+            >
+
+                <Tab.Screen name={ScreenNames.Search} component={SearchNavigation} options={{ title: 'Каталог', headerShown: false, }} />
+                <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: true }} />
+                {isLogin ?
+                    <Tab.Screen name={ScreenNames.Vacancies} component={VacanciesNavigation} options={{ headerShown: false }} />
+                    :
+                    <></>
                 }
-            })}
-        >
+                <Tab.Screen name={ScreenNames.Profile} component={ProfileNavigation} options={{ headerShown: false }} />
 
-            <Tab.Screen name={ScreenNames.Search} component={SearchNavigation} options={{ title: 'Каталог', headerShown: false, }} />
-            <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: true }} />
-            <Tab.Screen name={ScreenNames.Vacancies} component={SearchNavigation} options={{ headerShown: false }} />
-            <Tab.Screen name={ScreenNames.Profile} component={ProfileNavigation} options={{ headerShown: false }} />
-
-        </Tab.Navigator>
-    );
+            </Tab.Navigator>
+        );
+    }
 }
+
+

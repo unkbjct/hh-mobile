@@ -242,7 +242,7 @@ export default function ResumeScreen({ route, navigation }) {
                         <Text style={[styles.header, { marginRight: 10, marginBottom: 15, }]}>Образование - {education}</Text>
                         {resume.educations.map((item, i) => {
                             return (
-                                <View style={styles.card}>
+                                <View key={`education-${item.id}`} style={styles.card}>
                                     <Text style={[{ color: '#dc3545', fontSize: 20, fontWeight: 500, marginBottom: 10 }]}>{item.college}</Text>
                                     <Text style={styles.text}>{item.faculty}</Text>
                                     <Text style={[styles.text, { fontWeight: 700 }]}>{item.specialitty}</Text>

@@ -52,6 +52,19 @@ export default function VacancyScreen({ route, navigation }) {
         )
     }
 
+    const response = () => {
+        fetch(`${SiteUrl}api/vacancy/${vacancy.id}/response`, {
+            method: 'post'
+        }).then(response => response.json()).then(response => {
+            if (response.status == 'timestamp') {
+                Alert.alert(`Ошибка`, `По правилам, пользователь может откилкнуться на одну и туже вакансию только один раз в день`)
+            } else {
+                Alert.alert(`Отклик: ${vacancy.position}`, `Если работодателю понравиться ваше резюме, он скоро свяжется с вами`)
+                getData();
+            }
+        })
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={getData} />}>
@@ -65,7 +78,9 @@ export default function VacancyScreen({ route, navigation }) {
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10 }]}>
+                            <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10 }]} onPress={() => {
+                                response();
+                            }}>
                                 <Text style={{ color: 'white' }}>Откликнуться</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary,]}
@@ -162,7 +177,7 @@ export default function VacancyScreen({ route, navigation }) {
                         <TouchableOpacity>
                             <Text style={[styles.header, { textAlign: 'center', color: '#0d6efd' }]}>{company.legal_title}</Text>
                         </TouchableOpacity>
-                        
+
                     </View>
                 </View>
             </ScrollView>

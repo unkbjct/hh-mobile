@@ -8,6 +8,8 @@ import {
 } from "react-native"
 import { defStyles } from "./styles";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { SiteUrl } from "../env";
+import { Alert } from "react-native";
 
 export default class VacancyCard extends Component {
     constructor(props) {
@@ -15,6 +17,20 @@ export default class VacancyCard extends Component {
         this.vacancy = props.vacancy;
         navigation = props.navigation;
         this.navigation = props.navigation;
+        this.callback = props.callback;
+    }
+
+    response() {
+        fetch(`${SiteUrl}api/vacancy/${this.vacancy.id}/response`, {
+            method: 'post'
+        }).then(response => response.json()).then(response => {
+            if (response.status == 'timestamp') {
+                Alert.alert(`Ошибка`, `По правилам, пользователь может откилкнуться на одну и туже вакансию только один раз в день`)
+            } else {
+                Alert.alert(`Отклик: ${this.vacancy.position}`, `Если работодателю понравиться ваше резюме, он скоро свяжется с вами`)
+                this.callback();
+            }
+        })
     }
 
     render() {
@@ -33,7 +49,7 @@ export default class VacancyCard extends Component {
                     <Text style={[defStyles.semiHeadeer, { color: 'red', fontWeight: 600 }]}>{this.vacancy.city}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger]}>
+                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger]} onPress={() => this.response()}>
                         <Text style={{ color: 'white' }}>Откликнуться</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 10 }}>

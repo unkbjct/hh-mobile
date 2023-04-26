@@ -85,7 +85,7 @@ export default function SearchScreen({ navigation }) {
                             {vacancies.map((vacancy) => {
                                 // console.log(search);
                                 return (
-                                    <VacancyCard key={`vacancy-${vacancy.id}`} vacancy={vacancy} navigation={navigation} />
+                                    <VacancyCard key={`vacancy-${vacancy.id}`} vacancy={vacancy} navigation={navigation} callback={() => { getData }} />
                                 )
                             })}
                         </View>

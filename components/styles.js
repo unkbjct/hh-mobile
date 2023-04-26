@@ -32,7 +32,7 @@ export const defStyles = StyleSheet.create({
         color: 'rgb(40, 40, 40)'
     },
 
-    hr:{
+    hr: {
         borderWidth: 1,
         borderColor: 'silver',
         marginBottom: 10,
@@ -58,4 +58,5 @@ export const colors = {
     danger: '#dc3545',
     primary: '#0d6efd',
     white: 'white',
+    warning: 'rgb(255,193,7)',
 }

@@ -4,69 +4,37 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    Animated,
-    Easing
 } from 'react-native';
-import { defStyles } from '../styles';
+import SwitchSelector from 'react-native-switch-selector';
+import { colors } from '../styles';
 
-export default class LabelInput extends React.Component {
+export default class Selector extends React.Component {
     constructor(props) {
         super(props)
         this.label = props.label;
         this.value = props.value;
         this.help = props.help;
         this.setValue = props.onChange;
-        this.multiline = props.multiline;
-        this.styleMultiline = (this.multiline) ? styles.Multiline : {};
-        this.blur = props.blur;
+        this.initial = props.initial;
+        this.options = props.options;
 
     }
-    state = {
-        styleInput: styles.Input
-    }
-
-    onFocus() {
-        this.setState({
-            styleInput: styles.FocusInput
-        })
-    }
-
-    onBlur() {
-        this.setState({
-            styleInput: styles.Input
-        })
-        if (this.blur) {
-            this.blur()
-        }
-
-    }
-
 
 
     render() {
         return (
-            <View style={{ marginBottom: 20, }} >
-                <View style={[styles.Container]}>
-                    <Text style={styles.LabelText}>{this.label}</Text>
-                    <View style={[styles.InputView]}>
-                        <TextInput
-                            // placeholder={this.label}
-                            multiline={this.multiline}
-                            onBlur={() => this.onBlur}
-                            onFocus={() => this.onFocus()}
-                            onChangeText={value => {
-                                if (this.setValue) {
-                                    this.setValue(value)
-                                }
-                            }}
-                            secureTextEntry={this.secure}
-
-                            // style={s tyles.EditInput}
-                            style={[this.state.styleInput, this.styleMultiline]}>{this.value}</TextInput>
-                    </View>
-                </View>
+            <View style={[styles.Container]}>
+                <Text style={styles.LabelText}>{this.label}</Text>
+                <SwitchSelector style={{ borderWidth: 1, borderColor: 'silver', borderRadius: 50, padding: 5, }}
+                    // options={options}
+                    buttonColor={colors.danger}
+                    selectedColor={colors.white}
+                    initial={this.initial}
+                    options={this.options}
+                    onPress={value => this.setValue(value)}
+                />
                 {(this.help) ? <Text style={{ color: 'rgb(150, 150, 150)' }}>{this.help}</Text> : <></>}
-            </View >
+            </View>
         )
     }
 }
@@ -84,8 +52,7 @@ const styles = StyleSheet.create({
     Container: {
         // borderBottomWidth: 1,
         // borderColor: 'silver',
-        marginBottom: 10,
-        zIndex: 3,
+        marginBottom: 20,
     },
     ContainerFocus: {
         // borderBottomWidth: 1,
@@ -130,7 +97,4 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
     },
-    Multiline: {
-        minHeight: 100
-    }
 })

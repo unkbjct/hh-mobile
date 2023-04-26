@@ -16,7 +16,7 @@ import VacancyCard from '../../../components/VacancyCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ResumeCard from '../../../components/personal/ResumeCard';
 
-export default function ResumesScreen({ navigation }) {
+export default function ResumesScreen({ navigation, route }) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [user, setUser] = React.useState(null);
     const [resumes, setResumes] = React.useState(null);
@@ -43,7 +43,7 @@ export default function ResumesScreen({ navigation }) {
         }
     }
 
-    React.useEffect(getData, []);
+    React.useEffect(getData, [route]);
 
 
     if (isLoading) {
