@@ -10,6 +10,7 @@ import { defStyles } from "./styles";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SiteUrl } from "../env";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class VacancyCard extends Component {
     constructor(props) {
@@ -18,6 +19,12 @@ export default class VacancyCard extends Component {
         navigation = props.navigation;
         this.navigation = props.navigation;
         this.callback = props.callback;
+        this.favorites = props.favorites;
+        this.state.isFavorite = this.favorites.includes(this.vacancy.id)
+    }
+
+    state = {
+        isFavorite: false
     }
 
     response() {
@@ -31,6 +38,17 @@ export default class VacancyCard extends Component {
                 this.callback();
             }
         })
+    }
+
+    favorite() {
+        if (this.state.isFavorite) {
+            this.favorites.splice(this.favorites.findIndex(e => e == this.vacancy.id), 1);
+            AsyncStorage.setItem('favorites', JSON.stringify(this.favorites));
+        } else {
+            this.favorites.push(this.vacancy.id)
+            AsyncStorage.setItem('favorites', JSON.stringify(this.favorites))
+        }
+        this.setState({ isFavorite: !this.state.isFavorite })
     }
 
     render() {
@@ -52,8 +70,8 @@ export default class VacancyCard extends Component {
                     <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger]} onPress={() => this.response()}>
                         <Text style={{ color: 'white' }}>Откликнуться</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 10 }}>
-                        <Ionicons name={'heart-outline'} size={35} color={'#dc3545'}></Ionicons>
+                    <TouchableOpacity style={{ marginRight: 10 }} onPress={() => this.favorite()}>
+                        <Ionicons name={this.state.isFavorite ? 'heart' : 'heart-outline'} size={35} color={'#dc3545'}></Ionicons>
                     </TouchableOpacity>
                 </View>
             </View >
@@ -67,7 +85,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         shadowOffset: {
             width: 1,
-            height: 4,
+            height: 2,
         },
         shadowOpacity: .2,
         width: '100%',

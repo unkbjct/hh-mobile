@@ -95,7 +95,7 @@ export default function MainNavigation() {
             >
 
                 <Tab.Screen name={ScreenNames.Search} component={SearchNavigation} options={{ title: 'Каталог', headerShown: false, }} />
-                <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: true }} />
+                <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: false }} />
                 {isLogin ?
                     <Tab.Screen name={ScreenNames.Vacancies} component={VacanciesNavigation} options={{ headerShown: false }} />
                     :

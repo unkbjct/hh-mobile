@@ -2,7 +2,7 @@ import * as React from "react";
 import { Alert, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Loading } from "../../../components/Loading";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { defStyles } from "../../../components/styles";
+import { colors, defStyles } from "../../../components/styles";
 
 export default function ProfileScreen({ navigation }) {
     const [isLoading, setIsLoading] = React.useState(true);
@@ -28,27 +28,21 @@ export default function ProfileScreen({ navigation }) {
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={getUser} />}>
                 <View>
-                    <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 40, borderBottomColor: '#0d6efd', borderBottomWidth: 1 }}>
-                        <Text style={[defStyles.header, { marginRight: 20 }]}>{user.surname}</Text>
-                        <Text style={defStyles.header}>{user.name}</Text>
+                    <View style={[styles.headerView, { paddingHorizontal: 10, paddingTop: 20 }]}>
+                        <Text style={[defStyles.header, { textAlign: "center", color: 'rgb(70, 70, 70)' }]}>{user.surname} {user.name}</Text>
                     </View>
-                    <View style={{backgroundColor: 'rgba(200, 200, 200, .15)'}}>
-                        <View style={{ padding: 10, marginBottom: 10, paddingTop: 20, }}>
-                            <Text style={defStyles.semiHeadeer}>Всего отлкиков на вакинсии: {0}</Text>
-                            <Text style={defStyles.semiHeadeer}>Вакансий в избранном: {0}</Text>
-                        </View>
-                    </View>
-                    <View style={{ borderTopWidth: 1, borderColor: '#0d6efd' }}>
-                        <TouchableOpacity style={styles.listItem}>
+
+                    <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                        <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("Responses")}>
                             <Text style={styles.listText}>Мои отклики</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.listItem}>
+                        <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("Favorites")}>
                             <Text style={styles.listText}>Избранное</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.listItem} onPress={()=>navigation.navigate('ChangeData')}>
+                        <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ChangeData')}>
                             <Text style={styles.listText}>Редактировать данные</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.listItem} onPress={()=>navigation.navigate('ChangePassword')}>
+                        <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ChangePassword')}>
                             <Text style={styles.listText}>Изменить пароль</Text>
                         </TouchableOpacity>
                         {/* <TouchableOpacity style={styles.listItem} onPress={()=>navigation.navigate('Settings')}>
@@ -57,7 +51,7 @@ export default function ProfileScreen({ navigation }) {
                         <TouchableOpacity style={styles.listItem}>
                             <Text style={styles.listText}>Как работают отклики?</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.listItem} onPress={() => {
+                        <TouchableOpacity style={[styles.listItem, { backgroundColor: '#dc354573' }]} onPress={() => {
                             Alert.alert(
                                 "Вы уверены что хотите выйти?", null,
                                 [
@@ -73,23 +67,40 @@ export default function ProfileScreen({ navigation }) {
                                 ]
                             );
                         }}>
-                            <Text style={styles.listText}>Выход</Text>
+                            <Text style={[styles.listText, { color: 'white' }]}>Выход</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
 const styles = StyleSheet.create({
+    headerView: {
+        backgroundColor: 'white',
+        shadowOffset: {
+            width: 2,
+            height: 4,
+        },
+        shadowOpacity: .2,
+    },
     listItem: {
         padding: 15,
-        borderBottomWidth: 1,
-        borderColor: '#0d6efd40',
+        borderColor: 'rgb(220, 220, 220)',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 20,
+        backgroundColor: 'white',
+        shadowOffset: {
+            width: 2,
+            height: 3,
+        },
+        shadowOpacity: .2,
     },
     listText: {
         fontSize: 22,
-        color: 'rgb(60, 60, 60)'
+        color: 'rgb(60, 60, 60)',
+        // textAlign: 'center'
     }
 })

@@ -59,8 +59,8 @@ export default function ResumesScreen({ navigation, route }) {
                     <View>
                         <Text style={[defStyles.header, { textAlign: 'center' }]}>Мои резюме</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 20 }}>
-                        <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10 }]} onPress={() => {
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
+                        <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 10 }]} onPress={() => {
                             console.log(user.api_token)
 
                             fetch(`${SiteUrl}api/city/define`, { method: 'get' }).then(() => {
@@ -84,12 +84,21 @@ export default function ResumesScreen({ navigation, route }) {
                             <Text style={{ color: 'white' }}>Создать новое резюме</Text>
                         </TouchableOpacity>
                     </View>
+                    <Text style={{ textAlign: 'center', marginBottom: 10 }}>Если вы не хотите видеть отдел "мои компании", перейдите в настройки в личном кабинете</Text>
                     <View style={{}}>
-                        {resumes.map((resume) => {
-                            return (
-                                <ResumeCard key={`resume-${resume.id}`} resume={resume} navigation={navigation} token={user.api_token} callback={getData} />
-                            )
-                        })}
+                        {resumes.length ?
+                            <View>
+                                {resumes.map((resume) => {
+                                    return (
+                                        <ResumeCard key={`resume-${resume.id}`} resume={resume} navigation={navigation} token={user.api_token} callback={getData} />
+                                    )
+                                })}
+                            </View>
+                            :
+                            <View style={{ flex: 1, alignItems: 'center', marginTop: '30%' }}>
+                                <Text style={{ fontSize: 25, textAlign: 'center', color: 'gray' }}>У вас еще нет созданных резюме</Text>
+                            </View>
+                        }
                     </View>
                 </View>
             </ScrollView>

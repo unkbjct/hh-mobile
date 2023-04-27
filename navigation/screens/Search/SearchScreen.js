@@ -14,12 +14,14 @@ import { defStyles } from '../../../components/styles';
 import { SiteUrl } from '../../../env';
 import VacancyCard from '../../../components/VacancyCard';
 import ResumeCard from '../../../components/ResumeCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SearchScreen({ navigation }) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [search, setSearch] = React.useState('vacancy');
     const [vacancies, setVacancies] = React.useState(null);
     const [resumes, setResumes] = React.useState(null);
+    const [favorites, setFavorites] = React.useState([]);
 
     const changeSearch = (content) => {
         setSearch(content)
@@ -36,6 +38,9 @@ export default function SearchScreen({ navigation }) {
                 }).then(async function (response) {
                     response = await response.json();
                     setVacancies(response.data.vacancies)
+                    await AsyncStorage.getItem('favorites', (errs, favorites) => {
+                        setFavorites(JSON.parse(favorites));
+                    })
                 }).finally(() => setIsLoading(false))
             } else {
                 fetch(SiteUrl + 'api/search/resumes', {
@@ -85,7 +90,7 @@ export default function SearchScreen({ navigation }) {
                             {vacancies.map((vacancy) => {
                                 // console.log(search);
                                 return (
-                                    <VacancyCard key={`vacancy-${vacancy.id}`} vacancy={vacancy} navigation={navigation} callback={() => { getData }} />
+                                    <VacancyCard key={`vacancy-${vacancy.id}`} vacancy={vacancy} navigation={navigation} callback={() => { getData }} favorites={favorites} />
                                 )
                             })}
                         </View>

@@ -10,12 +10,14 @@ import {
     View
 } from "react-native";
 import { Loading } from "../../../components/Loading";
-import { defStyles } from '../../../components/styles';
+import { colors, defStyles } from '../../../components/styles';
 import { SiteUrl } from '../../../env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LabelInput from '../../../components/inputs/Labelnput';
 import { StyleSheet } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native';
 
 export default function CreateCompanyScreen({ navigation, route }) {
     const [isLoading, setIsLoading] = React.useState(true);
@@ -24,7 +26,9 @@ export default function CreateCompanyScreen({ navigation, route }) {
     const [description, setDescription] = React.useState('');
     const [city, setCity] = React.useState('');
     const [address, setAddress] = React.useState('');
-    const [logo, setLogo] = React.useState('');
+    const [logo, setLogo] = React.useState(false);
+    const [logoUri, setLogoUri] = React.useState('');
+    const [logoText, setLogoText] = React.useState('');
     const [citiesList, setCitiesList] = React.useState([]);
     const [cityText, setCityText] = React.useState('');
     const [qwe, setQwe] = React.useState([]);
@@ -51,20 +55,87 @@ export default function CreateCompanyScreen({ navigation, route }) {
         // console.log(value)
     }
 
+    const createCompany = () => {
+        let formData = new FormData();
+        formData.append("token", user.api_token);
+        formData.append("legal_title", legalTitle);
+        formData.append("description", description);
+        formData.append("city", city);
+        formData.append("address", address);
+        if (logo) formData.append("image", { uri: logo, name: 'image.png', type: 'image/png' });
+
+        fetch(`${SiteUrl}api/company/create`, {
+            method: 'post',
+            body: formData
+        }).then(response => response.json()).then(async response => {
+            if (response.errors) {
+                let errors = response.errors
+                let alertString = "";
+                for (let key in errors) {
+                    console.log(key)
+                    alertString += `\n${errors[key]}`;
+                }
+                Alert.alert("Ошибка", alertString);
+                return;
+            }
+            Alert.alert("Компания успешно добавлена", "Дождитесь окончания проверки, чтобы добавть вакансию", [{
+                text: "ок",
+                onPress: () => navigation.navigate("Companies", { refresh: true })
+            }])
+        })
+    }
+
+    const editCompany = () => {
+        let formData = new FormData();
+        formData.append("token", user.api_token);
+        formData.append("legal_title", legalTitle);
+        formData.append("description", description);
+        formData.append("city", city);
+        formData.append("address", address);
+        if (logo) formData.append("image", { uri: logo, name: 'image.png', type: 'image/png' });
+
+        console.log(formData);
+
+        fetch(`${SiteUrl}api/company/${company.id}/edit`, {
+            method: 'post',
+            body: formData
+        }).then(response => response.json()).then(async response => {
+            if (response.errors) {
+                let errors = response.errors
+                let alertString = "";
+                for (let key in errors) {
+                    console.log(key)
+                    alertString += `\n${errors[key]}`;
+                }
+                Alert.alert("Ошибка", alertString);
+                return;
+            }
+            Alert.alert("Компания успешно сохранена", "", [{
+                text: "ок",
+                onPress: () => navigation.navigate("Companies", { refresh: true })
+            }])
+            return
+        })
+    }
+
     const getData = () => {
         setIsLoading(true);
         AsyncStorage.getItem('user', async (errs, tempUser) => {
             tempUser = JSON.parse(tempUser)
             setUser(tempUser);
             if (!newCompany) {
-                setLegalTitle(company.legalTitle);
+                setLegalTitle(company.legal_title);
+                setDescription(company.description);
+                setCity(company.city);
+                setCityText(company.city);
+                setAddress(company.address);
+                setLogoUri(company.image);
             }
             setIsLoading(false);
         })
     }
 
     React.useEffect(getData, [route]);
-
 
     if (isLoading) {
         return (
@@ -102,14 +173,50 @@ export default function CreateCompanyScreen({ navigation, route }) {
                                 </ScrollView>
                             </View>
                             <LabelInput value={address} label={'Адрес'} onChange={value => { setAddress(value) }} />
-                            <LabelInput label={'Лого компании'} />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                                <TouchableOpacity disabled={logo ? true : false} style={[defStyles.btn, defStyles.btnPrimary]} onPress={async () => {
+                                    let result = await ImagePicker.launchImageLibraryAsync({
+                                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                                        // allowsEditing: true,
+                                        // aspect: [4, 3],
+                                        quality: 1,
+                                    });
+
+                                    setLogoUri(result.assets[0].uri)
+                                    setLogo(result.assets[0].uri);
+                                    setLogoText()
+                                }}>
+                                    <Text style={{ color: colors.white }}>Лого компании</Text>
+                                </TouchableOpacity>
+                                <Text>{logoText}</Text>
+                                {logo ?
+                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger]} onPress={() => {
+                                        setLogo(false)
+                                        setToggle(!toggle)
+                                    }}>
+                                        <Text style={{ color: colors.white }}>Удалить изображение</Text>
+                                    </TouchableOpacity>
+                                    :
+                                    <></>
+                                }
+                            </View>
+                            <View style={{ marginBottom: 20 }}>
+                                {logoUri ?
+                                    <Image style={styles.companyLogo} source={{ uri: (logo) ? `${logoUri}` : `${SiteUrl}/${logoUri}` }} />
+                                    :
+                                    <></>
+                                }
+                            </View>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                            <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10, marginBottom: 10 }]} onPress={() => navigation.navigate("CreateCompany", { 'newCompany': true })}>
+                            <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10, marginBottom: 10 }]} onPress={() => navigation.navigate("Companies")}>
                                 <Text style={{ color: 'white' }}>Отмена</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 10 }]} onPress={() => navigation.navigate("CreateCompany", { 'newCompany': true })}>
-                                <Text style={{ color: 'white' }}>Добавить компанию</Text>
+                            <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 10 }]} onPress={() => {
+                                (newCompany) ? createCompany() : editCompany();
+
+                            }}>
+                                <Text style={{ color: 'white' }}>{newCompany ? "Добавить компанию" : "Сохнарить компанию"}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -148,5 +255,13 @@ const styles = StyleSheet.create({
     borderBottom: {
         borderBottomLeftRadius: 7,
         borderBottomRightRadius: 7,
-    }
+    },
+    companyLogo: {
+        width: '80%',
+        height: 100,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        resizeMode: 'contain',
+        marginBottom: 20,
+    },
 })

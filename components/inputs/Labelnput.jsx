@@ -52,7 +52,7 @@ export default class LabelInput extends React.Component {
                         <TextInput
                             // placeholder={this.label}
                             multiline={this.multiline}
-                            onBlur={() => this.onBlur}
+                            onBlur={() => this.onBlur()}
                             onFocus={() => this.onFocus()}
                             onChangeText={value => {
                                 if (this.setValue) {

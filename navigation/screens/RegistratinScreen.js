@@ -22,12 +22,12 @@ import { defStyles } from '../../components/styles';
 export default function LoginScreen({ navigation }) {
 
     let data = {
-        email: null,
-        phone: null,
-        name: null,
-        surname: null,
-        passwd: null,
-        confirmPasswd: null,
+        email: '',
+        phone: '',
+        name: '',
+        surname: '',
+        passwd: '',
+        confirmPasswd: '',
     }
 
 

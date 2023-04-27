@@ -14,6 +14,7 @@ import { SiteUrl } from '../../../env';
 import { Loading } from '../../../components/Loading';
 import { defStyles } from '../../../components/styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function VacancyScreen({ route, navigation }) {
@@ -21,6 +22,8 @@ export default function VacancyScreen({ route, navigation }) {
     const [company, setCompany] = React.useState(null);
     const [vacancy, setVacancy] = React.useState(null);
     const [date, setDate] = React.useState(null);
+    const [isFavorite, setIsFavorite] = React.useState(false);
+    const [favorites, setFavorites] = React.useState(false);
     const { companyId, vacancyId } = route.params;
 
     const getData = () => {
@@ -37,6 +40,12 @@ export default function VacancyScreen({ route, navigation }) {
 
                 navigation.setOptions({
                     title: `Вакансия - ${response.data.vacancy.position}`
+                })
+                await AsyncStorage.getItem('favorites', (errs, favorites) => {
+                    if (!favorites) return;
+                    favorites = JSON.parse(favorites);
+                    setIsFavorite(favorites.includes(response.data.vacancy.id))
+                    setFavorites(favorites);
                 })
             }).then(() => setIsLoading(false))
         } catch (e) {
@@ -88,8 +97,17 @@ export default function VacancyScreen({ route, navigation }) {
                                 <Text style={{ color: 'white' }}>Показать контакты</Text>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={{ marginRight: 10 }}>
-                            <Ionicons name={'heart-outline'} size={35} color={'#dc3545'}></Ionicons>
+                        <TouchableOpacity style={{ marginRight: 10 }} onPress={() => {
+                            if (isFavorite) {
+                                favorites.splice(favorites.findIndex(e => e == vacancy.id), 1);
+                                AsyncStorage.setItem('favorites', JSON.stringify(favorites));
+                            } else {
+                                favorites.push(vacancy.id)
+                                AsyncStorage.setItem('favorites', JSON.stringify(favorites))
+                            }
+                            setIsFavorite(!isFavorite)
+                        }}>
+                            <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={35} color={'#dc3545'}></Ionicons>
                         </TouchableOpacity>
                     </View>
                     <View><Text style={defStyles.textMuted}>Вакансия опубликована {date.toLocaleDateString("ru-RU")}</Text></View>
@@ -122,6 +140,23 @@ export default function VacancyScreen({ route, navigation }) {
                                                 key={`responsibility-${responsibility.id}`}
                                                 style={[styles.listItem, (i === vacancy.responsibilities.length) ? styles.borderBottom : styles.withoutBorder]}>
                                                 {responsibility.responsibility}
+                                            </Text>
+                                        )
+                                    })}
+                                </View>
+                            </View>
+                            : <></>
+                        }
+                        {vacancy.pluses ?
+                            <View style={styles.section}>
+                                <Text style={styles.header}>Будет плюсом</Text>
+                                <View style={styles.list}>
+                                    {vacancy.pluses.map((plus, i) => {
+                                        return (
+                                            <Text
+                                                key={`plus-${i}`}
+                                                style={[styles.listItem, (i != vacancy.offers.length - 1) ? styles.borderBottom : {}]}>
+                                                {plus.plus}
                                             </Text>
                                         )
                                     })}
@@ -174,7 +209,7 @@ export default function VacancyScreen({ route, navigation }) {
                         <View>
                             <Image style={styles.companyLogo} source={{ uri: `${SiteUrl}/${company.image}` }} />
                         </View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={(() => { navigation.navigate("Company", { company: company }) })}>
                             <Text style={[styles.header, { textAlign: 'center', color: '#0d6efd' }]}>{company.legal_title}</Text>
                         </TouchableOpacity>
 
@@ -206,8 +241,8 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
     },
     borderBottom: {
-        borderWidth: 1,
-        borderColor: 'rgb(200, 200, 200)',
+        borderBottomColor: 'silver',
+        borderBottomWidth: 1,
     },
     skill: {
         // height: 200,

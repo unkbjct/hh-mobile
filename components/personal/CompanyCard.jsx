@@ -26,13 +26,8 @@ export default class CompanyCard extends Component {
 
     remove() {
 
-        let formData = new FormData()
-        formData.append('token', this.token);
-        formData.append('resumeId', this.resume.id);
-
-        fetch(`${SiteUrl}api/resume/remove`, {
+        fetch(`${SiteUrl}api/company/${this.company.id}}/remove`, {
             method: 'post',
-            body: formData
         }).then(response => response.json()).then((response) => {
             console.log(response.status)
         }).catch(e => {
@@ -51,14 +46,18 @@ export default class CompanyCard extends Component {
                         </View>
                         <View style={styles.CardBody}>
                             <View style={{ marginBottom: 0 }}>
-                                <TouchableOpacity >
+                                <TouchableOpacity onPress={() => {
+                                    this.navigation.navigate("Company", { company: this.company })
+                                }}>
                                     <Text style={[styles.Header]}>{this.company.legal_title}</Text>
                                 </TouchableOpacity>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 0 }]}>
+                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 0 }]} onPress={() => this.navigation.navigate("CreateCompany", { 'newCompany': false, company: this.company })}>
                                         <Text style={{ color: 'white' }}>Редактировать</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10, marginBottom: 0 }]} >
+                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10, marginBottom: 0 }]} onPress={() => {
+                                        this.navigation.navigate("Company", { company: this.company })
+                                    }}>
                                         <Text style={{ color: 'white' }}>Вакансий: {this.company.count}</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -81,10 +80,22 @@ export default class CompanyCard extends Component {
                                     <Text style={[styles.Header]}>{this.company.legal_title}</Text>
                                 </TouchableOpacity>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 0 }]}>
+                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary, { marginRight: 10, marginBottom: 0 }]} onPress={() => this.navigation.navigate("CreateCompany", { 'newCompany': false, company: this.company })}>
                                         <Text style={{ color: 'white' }}>Редактировать</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10, marginBottom: 0 }]} >
+                                    <TouchableOpacity style={[defStyles.btn, defStyles.btnDanger, { marginRight: 10, marginBottom: 0 }]} onPress={() => {
+                                        Alert.alert("Подтвердите действие", "Вы действительно хотите удалить компанию?", [
+                                            {
+                                                text: "Да, удалить",
+                                                onPress: () => {
+                                                    this.remove();
+                                                }
+                                            },
+                                            {
+                                                text: "Нет, отмена"
+                                            }
+                                        ])
+                                    }}>
                                         <Text style={{ color: 'white' }}>Удалить компанию</Text>
                                     </TouchableOpacity>
                                 </View>

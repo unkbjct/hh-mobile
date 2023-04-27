@@ -14,7 +14,7 @@ export default class ResumeCard extends Component {
         return (
             <View style={styles.Card}>
                 <View style={{ marginBottom: 0 }}>
-                    <TouchableOpacity onPress={()=>this.navigation.navigate('Resume', {resumeId: this.resume.id})}>
+                    <TouchableOpacity onPress={() => this.navigation.navigate('Resume', { resumeId: this.resume.id })}>
                         <Text style={[styles.Header]}>{this.resume.position}</Text>
                     </TouchableOpacity>
                     <View style={{ flexDirection: 'row' }}>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         shadowOffset: {
             width: 1,
-            height: 4,
+            height: 2,
         },
         shadowOpacity: .2,
         width: '100%',
