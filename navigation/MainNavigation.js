@@ -30,11 +30,16 @@ export default function MainNavigation() {
 
     const [isLoading, setIsLoading] = React.useState(true);
     const [isLogin, setIsLogin] = React.useState(true);
+    const [tabs, setTabs] = React.useState(undefined);
 
     const checkLogin = () => {
         setIsLoading(true);
-        AsyncStorage.getItem('user', (errs, user) => {
-            (user) ? setIsLogin(true) : setIsLogin(false);
+        AsyncStorage.getItem('user', async (errs, user) => {
+            await (user) ? setIsLogin(true) : setIsLogin(false);
+            await AsyncStorage.getItem('tabs', (errs, tabs) => {
+                setTabs(JSON.parse(tabs))
+                console.log(tabs)
+            })
         }).finally(() => setIsLoading(false));
     }
 
@@ -65,6 +70,27 @@ export default function MainNavigation() {
         )
     }
     function Main() {
+
+        function twoTabs() {
+            switch (tabs) {
+                case 'vacancy':
+                    return (
+                        <Tab.Screen name={ScreenNames.Vacancies} component={VacanciesNavigation} options={{ headerShown: false }} />
+                    )
+                case 'resume':
+                    return (
+                        <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: false }} />
+                    )
+                default:
+                    return (
+                        <>
+                            <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: false }} />
+                            <Tab.Screen name={ScreenNames.Vacancies} component={VacanciesNavigation} options={{ headerShown: false }} />
+                        </>
+                    )
+            }
+        }
+
         return (
             <Tab.Navigator
                 // header={'asd'}
@@ -95,12 +121,7 @@ export default function MainNavigation() {
             >
 
                 <Tab.Screen name={ScreenNames.Search} component={SearchNavigation} options={{ title: 'Каталог', headerShown: false, }} />
-                <Tab.Screen name={ScreenNames.Resumes} component={ResumesNavigation} options={{ headerShown: false, unmountOnBlur: false }} />
-                {isLogin ?
-                    <Tab.Screen name={ScreenNames.Vacancies} component={VacanciesNavigation} options={{ headerShown: false }} />
-                    :
-                    <></>
-                }
+                {twoTabs()}
                 <Tab.Screen name={ScreenNames.Profile} component={ProfileNavigation} options={{ headerShown: false }} />
 
             </Tab.Navigator>

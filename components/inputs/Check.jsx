@@ -40,7 +40,7 @@ export default class Check extends React.Component {
                     onValueChange={() => { this.setState({ isChecked: !this.state.isChecked }) }}
                     color={this.state.isChecked ? colors.danger : undefined}
                 />
-                <Text style={{ fontSize: 20, marginBottom: 10 }}>{this.label}</Text>
+                <Text style={{ fontSize: 20 }}>{this.label}</Text>
             </TouchableOpacity>
         )
     }

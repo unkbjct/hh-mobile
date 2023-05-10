@@ -1,62 +1,62 @@
-// import * as React from 'react';
-// import { RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
-// import { Loading } from '../../../components/Loading';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { RadioButton } from 'react-native-paper';
+import * as React from 'react';
+import { Alert, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Loading } from '../../../components/Loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RadioButton } from 'react-native-paper';
+import { defStyles } from '../../../components/styles';
+import Selector from '../../../components/inputs/Selector';
 
 
-// export default function SettingsScreen({ navigation }) {
-//     const [isLoading, setIsLoading] = React.useState(true);
-//     const [user, setUser] = React.useState();
-//     const [oldPasswd, setOldPasswd] = React.useState(null);
-//     const [newPasswd, setNewPasswd] = React.useState(null);
-//     const [confirmPasswd, setConfirmPasswd] = React.useState(null);
-//     const [selected, setSelected] = React.useState(false);
-//     const [show, setShow] = React.useState(false);
-//     const [checked, setChecked] = React.useState('first');
-//     const getData = () => {
-//         setIsLoading(true);
-//         AsyncStorage.getItem('user', (errs, user) => {
-//             setUser(JSON.parse(user));
-//             // console.log(user)
-//         }).finally(() => setIsLoading(false));
-//     }
+export default function SettingsScreen({ navigation }) {
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [tabs, setTabs] = React.useState(undefined);
 
-//     const changeShow = (value) => {
-//         setShow(value)
-//         return value;
-//     }
+    const findInit = (list, need, key = 'value') => {
+        return list.findIndex((element) => element[key] == need);
+    }
 
-//     React.useEffect(getData, []);
+    const getData = () => {
+        setIsLoading(true);
+        AsyncStorage.getItem('tabs', (errs, tabs) => {
+            setTabs(JSON.parse(tabs))
+            console.log(tabs)
+        }).then(() => setIsLoading(false))
+    }
 
-//     if (isLoading) {
-//         return (
-//             <Loading />
-//         )
-//     }
+    const tabItems = [
+        { label: 'Все', value: 'undefined', key: 'undefined' },
+        { label: 'Резюме', value: 'resume', key: 'resume' },
+        { label: 'Вакансии', value: 'vacancy', key: 'vacancy' },
+    ]
 
-//     return (
-//         <SafeAreaView style={{ flex: 1 }}>
-//             <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={getData} />}>
-//                 <View>
-//                     {/* <RadioInput label={'Отображать вакансии, скрыть резюме'} selected={true} value={'vacancies'} onSelect={value => changeShow(value)}></RadioInput>
-//                     <RadioInput label={'Отображать резюме, скрыть вакансии'} selected={true} value={'resumes'} onSelect={value => changeShow(value)}></RadioInput>
-//                     <RadioInput label={'Отображать вакансии, скрыть резюме'} selected={true} value={'vacancies'} onSelect={value => changeShow(value)}></RadioInput>
-//                     <RadioInput label={'Отображать резюме, скрыть вакансии'} selected={true} value={'resumes'} onSelect={value => changeShow(value)}></RadioInput> */}
-//                     <RadioButton
-//                         value="first"
-//                         status={checked === 'first' ? 'checked' : 'unchecked'}
-//                         onPress={() => setChecked('first')}
-//                     />
-//                     <Text>asd</Text>
-//                     <RadioButton
-//                         value="second"
-//                         status={checked === 'second' ? 'checked' : 'unchecked'}
-//                         onPress={() => setChecked('second')}
-//                     />
-//                     <Text>settings</Text>
-//                 </View>
-//             </ScrollView>
-//         </SafeAreaView >
-//     )
-// }
+    async function setTab(value) {
+        setIsLoading(true)
+        await AsyncStorage.setItem('tabs', JSON.stringify(value), () => {
+            Alert.alert("изменения вступят в силу после перезапуска приложения");
+            setTabs(value)
+        })
+        setIsLoading(false)
+    }
+
+    React.useEffect(getData, []);
+
+    if (isLoading) {
+        return (
+            <Loading />
+        )
+    }
+
+    return (
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={getData} />}>
+                <View>
+                    <Text style={[defStyles.semiHeadeer, { textAlign: 'left', marginTop: 50, marginBottom: 40, paddingHorizontal: 20 }]}>Если вы не собираетесь размещать вакансии Вы можете изменить нижнию панель навигации, и наоборот</Text>
+                    <View style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingTop: 20, borderColor: 'silver', borderTopWidth: 1, borderBottomWidth: 1, }}>
+                        <Selector initial={findInit(tabItems, tabs)} onChange={value => setTab(value)} label={'Выберите что именно отображать'} options={tabItems} />
+                    </View>
+                    <Text style={[defStyles.semiHeadeer, { textAlign: 'left', marginTop: 50, marginBottom: 40, paddingHorizontal: 20 }]}>Сообщения/подсказки пропадут после первого изменения</Text>
+                </View>
+            </ScrollView>
+        </SafeAreaView >
+    )
+}

@@ -77,7 +77,6 @@ export default function CreateVacancyScreen({ navigation, route }) {
         { label: 'Не требуется', value: 'Не требуется' },
         { label: 'Среднее профессиональное', value: 'Среднее профессиональное' },
         { label: 'Высшее', value: 'Высшее' },
-
     ]
 
     const findInit = (list, need, key = 'value') => {

@@ -21,6 +21,7 @@ export default function CompaniesScreen({ navigation, route }) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [user, setUser] = React.useState(null);
     const [companies, setCompanies] = React.useState(null);
+    const [tabs, setTabs] = React.useState(null);
 
     const getData = () => {
         setIsLoading(true);
@@ -33,9 +34,14 @@ export default function CompaniesScreen({ navigation, route }) {
                 // formData.append("apiToren", tempUser.api_token);
                 fetch(`${SiteUrl}api/companies`, {
                     method: 'post',
-                }).then(response => response.json()).then(response => {
+                }).then(response => response.json()).then(async response => {
+                    // console.log(response)
                     setCompanies(response.data.companies);
-                }).then(() => { setIsLoading(false) })
+                    await AsyncStorage.getItem('tabs', (errs, tabs) => {
+                        setTabs(JSON.parse(tabs))
+                    })
+                    setIsLoading(false)
+                })
             })
         } catch (e) {
             console.log(e)
@@ -63,7 +69,7 @@ export default function CompaniesScreen({ navigation, route }) {
                             <Text style={{ color: 'white' }}>Добавить новую компанию</Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={{ textAlign: 'center', marginBottom: 10 }}>Если вы не хотите видеть отдел "мои компании", перейдите в настройки в личном кабинете</Text>
+                    {tabs == null ? <Text style={{ textAlign: 'center', marginBottom: 10 }}>Если вы не хотите видеть отдел "мои компании", перейдите в настройки в личном кабинете</Text> : <></>}
                     <View >
                         {companies.length ?
                             <View>

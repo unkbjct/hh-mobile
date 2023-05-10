@@ -45,10 +45,10 @@ export default function ProfileScreen({ navigation }) {
                         <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ChangePassword')}>
                             <Text style={styles.listText}>Изменить пароль</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={styles.listItem} onPress={()=>navigation.navigate('Settings')}>
+                        <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('Settings')}>
                             <Text style={styles.listText}>Настройки</Text>
-                        </TouchableOpacity> */}
-                        <TouchableOpacity style={styles.listItem}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate("HowResponses")}>
                             <Text style={styles.listText}>Как работают отклики?</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.listItem, { backgroundColor: '#dc354573' }]} onPress={() => {

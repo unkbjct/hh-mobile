@@ -20,6 +20,7 @@ export default function ResumesScreen({ navigation, route }) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [user, setUser] = React.useState(null);
     const [resumes, setResumes] = React.useState(null);
+    const [tabs, setTabs] = React.useState(null);
 
     const getData = () => {
         setIsLoading(true);
@@ -36,6 +37,9 @@ export default function ResumesScreen({ navigation, route }) {
                 }).then(async (response) => {
                     response = await response.json()
                     setResumes(response.data.resumes);
+                    await AsyncStorage.getItem('tabs', (errs, tabs) => {
+                        setTabs(JSON.parse(tabs))
+                    })
                 }).then(() => { setIsLoading(false) })
             })
         } catch (e) {
@@ -84,7 +88,7 @@ export default function ResumesScreen({ navigation, route }) {
                             <Text style={{ color: 'white' }}>Создать новое резюме</Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={{ textAlign: 'center', marginBottom: 10 }}>Если вы не хотите видеть отдел "мои компании", перейдите в настройки в личном кабинете</Text>
+                    {tabs == null ? <Text style={{ textAlign: 'center', marginBottom: 10 }}>Если вы не хотите видеть отдел "мои компании", перейдите в настройки в личном кабинете</Text> : <></>}
                     <View style={{}}>
                         {resumes.length ?
                             <View>
