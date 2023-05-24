@@ -294,6 +294,8 @@ const SearchVacancies = ({ navigation }) => {
                 setEmployments(response.data.employments.map(e => { e.isChecked = false; return e }));
                 setSchedules(response.data.schedules.map(e => { e.isChecked = false; return e }));
                 await AsyncStorage.getItem('favorites', (errs, favorites) => {
+                    if(!favorites) return
+                    console.log(favorites)
                     setFavorites(JSON.parse(favorites));
                 })
             }).finally(() => setIsLoading(false))

@@ -20,7 +20,7 @@ export default class VacancyCard extends Component {
         this.navigation = props.navigation;
         this.callback = props.callback;
         this.favorites = props.favorites;
-        this.state.isFavorite = this.favorites.includes(this.vacancy.id)
+        this.state.isFavorite = this.favorites.includes(this.vacancy.id);
     }
 
     state = {

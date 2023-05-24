@@ -60,8 +60,8 @@ export default function CreateVacancyScreen({ navigation, route }) {
     const [citiesList, setCitiesList] = React.useState([]);
     const [toggle, setToggle] = React.useState(false);
 
-    const [employmentsList, setEmploymentsList] = React.useState();
-    const [schedulesList, setSchedulesList] = React.useState();
+    const [employmentsList, setEmploymentsList] = React.useState([]);
+    const [schedulesList, setSchedulesList] = React.useState([]);
 
     const { company, newVacancy, vacancy } = route.params;
 
@@ -207,10 +207,10 @@ export default function CreateVacancyScreen({ navigation, route }) {
         setIsLoading(true);
         AsyncStorage.getItem('user', async (errs, tempUser) => {
             tempUser = JSON.parse(tempUser)
-            setUser(tempUser);
+            await setUser(tempUser);
 
             if (!newVacancy) {
-                await fetch(`${SiteUrl}api/vacancy/${vacancy.id}`, {
+                await fetch(`${SiteUrl}api/bug/company/${company.id}/vacancy/${vacancy.id}`, {
                     method: 'post'
                 }).then(response => response.json()).then(async response => {
                     setPosition(response.data.vacancy.position)
@@ -234,8 +234,6 @@ export default function CreateVacancyScreen({ navigation, route }) {
                     setSkills(response.data.vacancy.skills.map(e => e.skill))
                 })
             }
-
-
             let formdata = new FormData();
             formdata.append("position", "**");
             await fetch(`${SiteUrl}api/search/vacancies`, {
@@ -248,10 +246,13 @@ export default function CreateVacancyScreen({ navigation, route }) {
                 setEmploymentsList(tempEmployments);
                 setSchedulesList(tempSchedules);
 
+            }).then(() => {
             })
 
-
             setIsLoading(false)
+
+
+
         })
     }
 
@@ -375,7 +376,7 @@ export default function CreateVacancyScreen({ navigation, route }) {
                                         <View key={`requirement-${i}`} style={{ alignItems: 'baseline', marginRight: 15, }}>
                                             <View style={styles.listItem}>
                                                 <Text style={{ fontSize: 20, marginRight: 10, flex: 9 }}>{item}</Text>
-                                                <TouchableOpacity style={{ flex: 1 }} onPress={() => removeItem(requirements, setRequirements, item)}>
+                                                <TouchableOpacity style={{ flex: 1 }} onPress={() => removeItem(responsebilities, setResponsibilities, item)}>
                                                     <Ionicons name={'close-circle-outline'} size={24} />
                                                 </TouchableOpacity>
                                             </View>

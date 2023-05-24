@@ -93,7 +93,7 @@ export default function VacancyScreen({ route, navigation }) {
                                 <Text style={{ color: 'white' }}>Откликнуться</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[defStyles.btn, defStyles.btnPrimary,]}
-                                onPress={() => Alert.alert(`${vacancy.surname} ${vacancy.name}`, `${vacancy.phone}${(vacancy.email) ? '\n${vacancy.email}' : ''}`)}>
+                                onPress={() => Alert.alert(`${vacancy.surname} ${vacancy.name}`, `${vacancy.phone}${(vacancy.email) ? `\n${vacancy.email}` : ''}`)}>
                                 <Text style={{ color: 'white' }}>Показать контакты</Text>
                             </TouchableOpacity>
                         </View>
